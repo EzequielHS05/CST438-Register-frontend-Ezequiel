@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import PropTypes from 'prop-types';
-import Dialog from '@mui/material/Dialog';
-import DialogActions from '@mui/material/DialogActions';
-import DialogContent from '@mui/material/DialogContent';
-import DialogTitle from '@mui/material/DialogTitle';
 import Button from '@mui/material/Button';
 import TextField from '@mui/material/TextField';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 class AddStudent extends Component {
     constructor(props){
@@ -25,16 +22,19 @@ class AddStudent extends Component {
             student_name: this.state.student_name,
             status_code: this.state.status_code     
         })
-        })
-        .then(response => response.json() )
-        .then(responseData => {
-            const { correct } = responseData;
-            this.setState({
-            correct: correct, 
-            message: (correct ? 'Correct' : 'Not correct. Try again')
-            });
-        })
-        .catch(err => console.error(err))
+        }).then(res => {
+            if (res.ok) {
+              toast.success("Student Succesfully registered", {
+                  position: toast.POSITION.BOTTOM_LEFT
+              });
+            } else {
+              toast.error("Student Registreation failed", {
+                  position: toast.POSITION.BOTTOM_LEFT
+              });
+              console.error('Post http status =' + res.status);
+        }}).catch(err => {
+            console.error(err);
+          }) 
     }
     
     handleChange = (event) =>  {
@@ -59,6 +59,7 @@ class AddStudent extends Component {
             <br/> <br/>
             <Button variant="outlined" color="primary" style={{margin: 10}}
              onClick={this.handleSubmit} >Submit</Button>
+             <ToastContainer autoClose={1500} />   
 
           </div>
         );
